@@ -55,13 +55,13 @@ class NoticeController
             $current_notice = $this->spbhlpr_notices[$current_notice_idx];
             $current_identity = $current_notice['Identity'];
             if (isset($_COOKIE['spbhlpr-notice-never'])) {
-                $never_cookie = json_decode(stripslashes($_COOKIE['spbhlpr-notice-never']));
+                $never_cookie = json_decode(sanitize_text_field(wp_unslash($_COOKIE['spbhlpr-notice-never'])));
                 if (isset($never_cookie->$current_identity) && $never_cookie->$current_identity === true) {
                     return false;
                 }
             }
             if (isset($_COOKIE['spbhlpr-notice-later'])) {
-                $later_cookie = json_decode(stripslashes($_COOKIE['spbhlpr-notice-later']));
+                $later_cookie = json_decode(sanitize_text_field(wp_unslash($_COOKIE['spbhlpr-notice-later'])));
                 if (isset($later_cookie->$current_identity) && is_numeric($later_cookie->$current_identity) && strtotime("+2 days", $later_cookie->$current_identity) > time()) {
                     return false;
                 }
@@ -74,7 +74,7 @@ class NoticeController
         $current_notice['Link'] = sprintf($default_link, $slug, $key); ?>
         <div class="spbhlpr-notice-notice" id="spbhlpr-notice-notice">
             <style>
-                <?php echo $current_notice['CSS']; ?>
+                <?php echo esc_html($current_notice['CSS']); ?>
             </style>
             <div class="spbhlpr-notice-message">
                 <p>
@@ -110,12 +110,12 @@ class NoticeController
         }
 
     ?>
-        <div class="notice notice-info is-dismissible <?= esc_attr($current_identity); ?>">
+        <div class="notice notice-info is-dismissible <?php echo esc_attr($current_identity); ?>">
             <h2 class="notice-title">Idea Flow – The Ultimate WordPress Theme</h2>
             <span class="st-notification-wrapper">
                 <span class="st-notification-column-wrapper">
                     <span class="st-notification-column">
-                        <img src="<?= esc_url(SUPERBHELPER_PATH . '/assets/img/preview.png'); ?>" width="150" height="177" />
+                        <img src="<?php echo esc_url(SUPERBHELPER_PATH . '/assets/img/preview.png'); ?>" width="150" height="177" />
                     </span>
 
                     <span class="st-notification-column">
@@ -133,13 +133,13 @@ class NoticeController
                         <h2>Get Started with Idea Flow</h2>
                         <ul>
                             <li><a href="https://superbthemes.com/demo/idea-flow/" class="button button-primary">View Demo</a></li>
-                            <li><a href="<?= esc_url(admin_url('theme-install.php?search=%22idea%20flow%22')); ?>" class="button button-primary">Install For Free</a></li>
+                            <li><a href="<?php echo esc_url(admin_url('theme-install.php?search=%22idea%20flow%22')); ?>" class="button button-primary">Install For Free</a></li>
                             <li><a href="https://superbthemes.com/customer-support/" target="_blank" class="button">Contact Support <span aria-hidden="true" class="dashicons dashicons-external"></span></a> </li>
                         </ul>
                     </span>
                 </span>
                 <span class="st-notification-footer">
-                    Idea Flow is created by SuperbThemes. We have 100.000+ users and are rated <strong>Excellent</strong> on Trustpilot <img src="<?= esc_url(SUPERBHELPER_PATH . '/assets/img/stars.svg'); ?>" width="87" height="16" />
+                    Idea Flow is created by SuperbThemes. We have 100.000+ users and are rated <strong>Excellent</strong> on Trustpilot <img src="<?php echo esc_url(SUPERBHELPER_PATH . '/assets/img/stars.svg'); ?>" width="87" height="16" />
                 </span>
             </span>
 
@@ -236,7 +236,7 @@ class NoticeController
             <script>
                 window.addEventListener("load", function() {
                     setTimeout(function() {
-                        var notice_id = "<?= esc_attr($current_identity); ?>";
+                        var notice_id = "<?php echo esc_attr($current_identity); ?>";
                         var nonce = "<?php echo esc_attr(wp_create_nonce('spbtic_dismiss_notice')); ?>";
                         var ajaxurl = "<?php echo esc_url(admin_url('admin-ajax.php')); ?>";
                         var dismissBtn = document.querySelector(

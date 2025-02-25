@@ -28,11 +28,11 @@ if (!class_exists('spbhlpr_plugin')) {
 		function spbhlpr_add_menu_items()
 		{
 			$user_caps = apply_filters('spbhlpr_user_capabilities', $this->user_caps);
-			add_menu_page($this->plugin_name, "SuperbThemes", $user_caps, $this->plugin_prefix, array($this, 'spbhlpr_base'), $this->base_url . "assets/img/icon-small.png");
+			add_menu_page($this->plugin_name, "Superb Helper", $user_caps, $this->plugin_prefix, array($this, 'spbhlpr_base'), $this->base_url . "assets/img/icon-small.png");
 			$this->page_hook = add_submenu_page($this->plugin_prefix, 'Guides & Recommendations', 'Guides & Recommendations', $user_caps, $this->plugin_prefix);
 			$this->subhooks[] = add_submenu_page($this->plugin_prefix, 'Free Themes', 'Free Themes', $user_caps, $this->plugin_prefix . "_themes", array($this, "spbhlpr_themes"), 99);
 			$this->subhooks[] = add_submenu_page($this->plugin_prefix, 'Free Plugins', 'Free Plugins', $user_caps, $this->plugin_prefix . "_plugins", array($this, "spbhlpr_plugins"), 99);
-			$this->subhooks[] = add_submenu_page($this->plugin_prefix, 'Go Pro', 'Go Pro', $user_caps, $this->plugin_prefix . "_gopro", array($this, "spbhlpr_gopro"), 99);
+			$this->subhooks[] = add_submenu_page($this->plugin_prefix, 'Get Premium &#128279;', 'Get Premium &#128279;', $user_caps, $this->plugin_prefix . "_getpremium", array($this, "spbhlpr_base"), 99);
 		}
 
 		function spbhlpr_backend_enqueue($hook)
@@ -64,22 +64,20 @@ if (!class_exists('spbhlpr_plugin')) {
 			include_once $this->base_dir . "inc/page_plugins.php";
 		}
 
-		function spbhlpr_gopro()
-		{
-			include_once $this->base_dir . "inc/page_gopro.php";
-		}
-
 		private	function spbhlpr_eventHandler()
 		{
 			require $this->base_dir . "inc/data/plugins-data.php";
 			if (isset($_POST['spbhlprq']))
-				$q = sanitize_text_field($_POST['spbhlprq']);
+				$q = sanitize_text_field(wp_unslash($_POST['spbhlprq']));
 
 			if (isset($q) && isset($_POST['_wpnonce_spbhlpr'])) {
+				$nonce = sanitize_text_field(wp_unslash($_POST['_wpnonce_spbhlpr']));
+				$path = isset($_POST['path']) ? sanitize_text_field(wp_unslash($_POST['path'])) : false;
+				$slug = isset($_POST['slug']) ? sanitize_text_field(wp_unslash($_POST['slug'])) : false;
+
 				switch ($q) {
 					case 'activate':
-						if (isset($_POST['path']) && wp_verify_nonce($_POST['_wpnonce_spbhlpr'], 'spbhlpr_activate_plugin')) {
-							$path = sanitize_text_field($_POST['path']);
+						if ($path && wp_verify_nonce($nonce, 'spbhlpr_activate_plugin')) {
 							$validated = false;
 							foreach ($recommended_plugins as $array) {
 								if (in_array($path, $array, true))
@@ -91,9 +89,7 @@ if (!class_exists('spbhlpr_plugin')) {
 						break;
 
 					case 'install':
-						if (isset($_POST['slug']) && isset($_POST['path']) && wp_verify_nonce($_POST['_wpnonce_spbhlpr'], 'spbhlpr_install_plugin')) {
-							$path = sanitize_text_field($_POST['path']);
-							$slug = sanitize_text_field($_POST['slug']);
+						if ($slug && $path && wp_verify_nonce($nonce, 'spbhlpr_install_plugin')) {
 							$target = array($slug, $path);
 							$validated = false;
 							foreach ($recommended_plugins as $array) {
@@ -133,13 +129,15 @@ if (!class_exists('spbhlpr_plugin')) {
 		{
 			require $this->base_dir . "inc/data/free-themes.php";
 			if (isset($_POST['spbhlprq']))
-				$q = sanitize_text_field($_POST['spbhlprq']);
+				$q = sanitize_text_field(wp_unslash($_POST['spbhlprq']));
 
 			if (isset($q) && isset($_POST['_wpnonce_spbhlpr'])) {
+				$nonce = sanitize_text_field(wp_unslash($_POST['_wpnonce_spbhlpr']));
+				$slug = isset($_POST['slug']) ? sanitize_text_field(wp_unslash($_POST['slug'])) : false;
+
 				switch ($q) {
 					case 'activate':
-						if (isset($_POST['slug']) && wp_verify_nonce($_POST['_wpnonce_spbhlpr'], 'spbhlpr_activate_theme')) {
-							$slug = sanitize_text_field($_POST['slug']);
+						if ($slug && wp_verify_nonce($nonce, 'spbhlpr_activate_theme')) {
 							$validated = false;
 							foreach ($free_themes as $theme) {
 								if ($theme['slug'] === $slug)
@@ -151,8 +149,7 @@ if (!class_exists('spbhlpr_plugin')) {
 						break;
 
 					case 'install':
-						if (isset($_POST['slug']) && wp_verify_nonce($_POST['_wpnonce_spbhlpr'], 'spbhlpr_install_theme')) {
-							$slug = sanitize_text_field($_POST['slug']);
+						if ($slug && wp_verify_nonce($nonce, 'spbhlpr_install_theme')) {
 							$validated = false;
 							foreach ($free_themes as $theme) {
 								if ($theme['slug'] === $slug)

@@ -4,10 +4,10 @@ $recommended_plugins = array(
     // Plugin List
 
     array(
-        'name'      => 'Superb Addons - WordPress & Elementor Addons',
+        'name'      => 'Superb Addons: Blocks, Patterns & Theme Designer',
         'path'      => 'superb-blocks/plugin.php',
         'slug'      => 'superb-blocks',
-        'desc'      => 'Add new awesome features to the WordPress editor & Elementor in seconds!',
+        'desc'      => 'Add new awesome features and improve the WordPress editor experience in seconds!',
         'img'       => 'addons-img.png',
         //      'url'       => 'https://superbthemes.com/plugins/superb-blocks/',
     ),

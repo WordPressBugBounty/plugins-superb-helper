@@ -2,7 +2,7 @@
 /*
 Plugin Name: Superb Helper
 Description: Superb Helper is your personal WordPress assistant.
-Version: 1.2.0
+Version: 1.3.0
 Author: SuPlugins
 Author URI: https://superbthemes.com/
 Author URI:
@@ -45,7 +45,7 @@ $spbhlpr->init();
 class spbhlpr
 {
     /// name, prefix, version
-    private $plugin_info = array('Superb Helper', 'spbhlpr', '1.2.0');
+    private $plugin_info = array('Superb Helper', 'spbhlpr', '1.3.0');
     private static $instance;
 
     public static function GetInstance()
@@ -62,6 +62,10 @@ class spbhlpr
         $this->spbhlpr_setupPlugin();
         add_filter('plugin_row_meta', array($this, 'spbhlpr_add_plugin_meta_links'), 10, 2);
         new NoticeController();
+        if (is_admin() && !class_exists('SuperbThemes\AddonsRecommender\NoticeController')) {
+            require_once SUPERBHELPER_PLUGIN_DIR . '/recommender/recommender.php';
+            \SuperbThemes\AddonsRecommender\NoticeController::init();
+        }
     }
 
     public function spbhlpr_setupPlugin()
@@ -90,7 +94,7 @@ class spbhlpr
     public function spbhlpr_customize_register($manager)
     {
         $manager->add_section('spbhlpr_install_plugins', array(
-            'title'      => __('Get Started', 'spbhlpr'),
+            'title'      => __('Get Started', 'superb-helper'),
             'priority'   => 0,
             'capability' => 'edit_theme_options',
         ));
@@ -101,15 +105,15 @@ class spbhlpr
         ));
 
         $manager->add_control('spbhlpr_get_started', array(
-            'label'    => __('', 'spbhlpr'),
-            'description'    => __('Get started by installing the recommended plugins & read relevant guides and tutorials!', 'spbhlpr'),
+            'label'    => '',
+            'description'    => __('Get started by installing the recommended plugins & read relevant guides and tutorials!', 'superb-helper'),
             'section'  => 'spbhlpr_install_plugins',
             'priority' => 1,
             'settings' => array(),
             'type'     => 'button',
             'input_attrs' => array(
-                'value' => __('Install Plugins', 'spbhlpr'),
-                'onclick' => "window.open('" . admin_url('admin.php?page=' . $this->plugin_info[1]) . "')",
+                'value' => __('Install Plugins', 'superb-helper'),
+                'onclick' => "window.open('" . esc_url(admin_url('admin.php?page=' . $this->plugin_info[1])) . "')",
                 'class' => 'button button-primary',
                 'style' => 'margin-top:20px;text-align: center; font-size: 14px; font-weight: bold; padding: 4px; float: none; width: 100%; background: #1fc76e; border-color: #1fc76e;height: 40px;box-shadow: 0px 0px 0px;text-shadow: 0px 0px 0px;-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;',
             ),
@@ -122,14 +126,14 @@ class spbhlpr
         ));
 
         $manager->add_control('spbhlpr_get_started_guides', array(
-            'label'    => __('', 'spbhlpr'),
+            'label'    => '',
             'section'  => 'spbhlpr_install_plugins',
             'priority' => 1,
             'settings' => array(),
             'type'     => 'button',
             'input_attrs' => array(
-                'value' => __('Read Guides', 'spbhlpr'),
-                'onclick' => "window.open('" . admin_url('admin.php?page=' . $this->plugin_info[1]) . "')",
+                'value' => __('Read Guides', 'superb-helper'),
+                'onclick' => "window.open('" . esc_url(admin_url('admin.php?page=' . $this->plugin_info[1])) . "')",
                 'class' => 'button button-primary',
                 'style' => 'margin-top:5px;text-align: center; font-size: 14px; font-weight: bold; padding: 4px; float: none; width: 100%; background: #1fc76e; border-color: #1fc76e;height: 40px;box-shadow: 0px 0px 0px;text-shadow: 0px 0px 0px;-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;',
             ),

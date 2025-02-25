@@ -46,5 +46,9 @@ jQuery(function ($) {
     function spbhlpr_hidenotice() {
       $("#spbhlpr-notice-notice").remove();
     }
+
+    var premlink = $("li#toplevel_page_spbhlpr a[href*=spbhlpr_getpremium]");
+    premlink.attr("href", "https://superbthemes.com/");
+    premlink.attr("target", "_blank");
   });
 });
